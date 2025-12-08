@@ -1,0 +1,48 @@
+/* base.css - layout, spacing, typography */
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; background:#f3f4f6;color:#111;}
+.container{max-width:1100px;margin:28px auto;padding:20px}
+.header-navy{background:linear-gradient(90deg,#082644,#07243a);border-radius:6px;padding:18px 20px;color:#fff}
+.brand{display:flex;gap:14px;align-items:center}
+.brand img{width:56px;height:56px;object-fit:contain}
+.brand-title{font-weight:800;font-size:20px;color:#fff}
+.brand-sub{font-size:12px;color:rgba(255,255,255,0.85)}
+nav a{margin-left:18px;color:rgba(255,255,255,0.9);text-decoration:none;font-weight:700;padding:8px 14px;border-radius:14px;background:rgba(255,255,255,0.06)}
+.main{display:grid;grid-template-columns:260px 1fr;gap:18px;margin-top:18px}
+.sidebar{background:white;border:1px solid #e5e7eb;border-radius:8px;padding:16px}
+.sidebar h3{font-size:15px;margin-bottom:10px}
+.control{margin:10px 0}
+select,input[type=range]{width:100%}
+.multiselect{height:72px}
+.actions{display:flex;gap:8px;margin-top:10px}
+.btn{padding:8px 10px;border-radius:6px;border:1px solid #d1d5db;background:#fff;cursor:pointer}
+.dash{display:grid;grid-template-rows:auto auto 1fr;gap:12px}
+.title{background:white;border:1px solid #e5e7eb;border-radius:8px;padding:18px;text-align:center}
+.title h1{font-size:28px;line-height:1.05}
+.kpis{display:flex;gap:12px;align-items:flex-start}
+.kpi{background:#fff;border-radius:6px;padding:12px}
+.big-kpi{flex:0 0 360px;border:1px solid rgba(0,0,0,0.06);text-align:left}
+.big-kpi h4{font-size:13px;color:#93b8d6;margin-bottom:6px}
+.big-kpi p{font-size:32px;font-weight:800;color:#0b3d91}
+.k-sub{font-size:13px;color:#6b7280;margin-top:6px}
+.small-kpis{display:flex;flex-direction:column;gap:8px;flex:1}
+.small-box{background:#0b3d91;color:#fff;padding:10px;border-radius:6px}
+.small-box h5{font-size:12px;margin-bottom:6px}
+.small-box p{font-size:18px;font-weight:700}
+.arrests-charges{flex:0 0 160px;border:1px solid rgba(0,0,0,0.06);padding:8px;border-radius:6px}
+.arrests-charges .arrests,.arrests-charges .charges{margin-bottom:8px}
+.arrests-charges h5{font-size:12px;color:#6b7280}
+.arrests-charges p{font-size:18px;font-weight:700}
+.visuals{display:grid;grid-template-columns:1fr 420px;gap:12px;align-items:start;margin-top:6px}
+.panel{background:white;border:1px solid #e5e7eb;border-radius:8px;padding:12px;min-height:180px}
+.panel-title{font-weight:700;margin-bottom:8px}
+.map-placeholder{display:flex;align-items:center;justify-content:center;height:260px;background:linear-gradient(90deg,#eef2ff,#fff);color:#6b7280;font-weight:700}
+.charts{display:flex;flex-direction:column;gap:12px}
+.small-row{display:flex;gap:12px}
+.chart-mini{flex:1;height:120px;display:flex;align-items:center;justify-content:center;color:#6b7280}
+footer{margin-top:14px;text-align:center;color:#6b7280;font-size:13px}
+.insights-row{margin-top:18px;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.panel.small{min-height:120px}
+.muted{font-size:12px;color:#6b7280;margin-top:6px}
+.chart-area{height:160px;display:flex;align-items:center;justify-content:center;color:#6b7280}
+@media (max-width:900px){.main{grid-template-columns:1fr}.visuals{grid-template-columns:1fr}nav a{display:none}}

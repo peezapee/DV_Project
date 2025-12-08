@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Australian Speeding Dashboard</title>
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/visualisations.css">
+  <!-- D3 v7 -->
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="https://unpkg.com/topojson-client@3"></script>
+</head>
+<body>
+  <div class="container">
+    <header class="header-navy">
+      <div class="brand">
+        <img src="/mnt/data/0fe58285-a1b1-4f7d-8264-20c4b21b8f47.png" alt="wireframe" />
+        <div>
+          <div class="brand-title">Australian Speeding Analysis</div>
+          <div class="brand-sub">Interactive prototype — D3 + HTML/CSS + KNIME</div>
+        </div>
+      </div>
+      <nav>
+        <a href="#">Home</a>
+        <a href="#">Dashboard</a>
+        <a href="#">Data Overview</a>
+        <a href="#">About</a>
+        <a href="#">Download</a>
+      </nav>
+    </header>
+
+    <div class="main">
+      <aside class="sidebar">
+        <h3>Filters</h3>
+        <div class="control">
+          <label>Jurisdiction</label>
+          <select id="jurisdiction">
+            <option value="all">All states & territories</option>
+            <option>NSW</option>
+            <option>VIC</option>
+            <option>QLD</option>
+            <option>SA</option>
+            <option>WA</option>
+            <option>TAS</option>
+            <option>NT</option>
+            <option>ACT</option>
+          </select>
+        </div>
+        <div class="control">
+          <label>Year</label>
+          <input id="yearRange" type="range" min="2008" max="2024" value="2016" />
+          <div class="muted">Selected year: <span id="yr">2016</span></div>
+        </div>
+        <div class="control">
+          <label>Detection method</label>
+          <select multiple id="detection" class="multiselect">
+            <option>Fixed camera</option>
+            <option>Mobile camera</option>
+            <option>Officer</option>
+          </select>
+        </div>
+        <div class="control">
+          <label>Location type</label>
+          <select id="locType">
+            <option>All</option>
+            <option>Urban</option>
+            <option>Rural</option>
+          </select>
+        </div>
+        <div class="actions">
+          <button class="btn" id="reset">Reset filters</button>
+          <button class="btn" id="share">Share view</button>
+        </div>
+        <div class="storyboard">
+          <h4>Storyboard</h4>
+          <ol>
+            <li>Load dataset (top-right shows last loaded year)</li>
+            <li>Use filters to focus by jurisdiction, year and detection</li>
+            <li>Inspect map for spatial hotspots</li>
+            <li>Use line chart to explore trends and click a year to filter</li>
+            <li>Download filtered CSV or export the view</li>
+          </ol>
+        </div>
+      </aside>
+
+      <main class="dash">
+        <div class="title">
+          <h1>Australian Speeding Dashboard</h1>
+          <div class="subtitle">Interactive dashboard to explore BITRE speeding fines (2008–2024)</div>
+        </div>
+
+        <div class="kpis">
+          <div class="kpi big-kpi">
+            <h4>Total fines</h4>
+            <p id="k_total">—</p>
+            <div class="k-sub">Speeding infringements, <span id="k_year_display">2024</span></div>
+          </div>
+
+          <div class="kpi small-kpis">
+            <div class="small-box">
+              <h5>Police fines</h5>
+              <p id="k_police">—</p>
+            </div>
+            <div class="small-box">
+              <h5>Camera fines</h5>
+              <p id="k_camera">—</p>
+            </div>
+          </div>
+
+          <div class="kpi arrests-charges">
+            <div class="arrests">
+              <h5>Arrests</h5>
+              <p id="k_arrests">—</p>
+            </div>
+            <div class="charges">
+              <h5>Charges</h5>
+              <p id="k_charges">—</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="visuals">
+          <section class="panel map-panel">
+            <div class="panel-title">Map of Australia — fines per 10K licences</div>
+            <div id="map" class="map-placeholder">Loading map...</div>
+            <div id="mapLegend" class="map-legend" aria-hidden="true">
+              <div class="gradient" id="mapGradient"></div>
+              <div class="labels"><span id="mapMin">0</span><span id="mapMax">100</span></div>
+            </div>
+          </section>
+
+          <section class="panel side-panel">
+            <div class="panel-title">Speeding trends (2008–2024)</div>
+            <div id="lineChart" class="chart-area">Loading line chart...</div>
+            <div class="panel-title" style="margin-top:10px">Detection methods (stacked)</div>
+            <div id="stacked" class="chart-area">Loading stacked bar...</div>
+            <div id="stackLegend" class="stack-legend" aria-hidden="true"></div>
+          </section>
+        </div>
+
+      </main>
+    </div>
+
+    <div class="insights-row">
+      <div class="panel small">
+        <div class="panel-title">Age group distribution</div>
+        <div id="ageBar" class="chart-area">Loading age distribution...</div>
+      </div>
+      <div class="panel small">
+        <div class="panel-title">KNIME Processed Insights</div>
+        <div id="insights">Top region: —<br>Peak hour: —<br>Avg. speed: —</div>
+        <div style="margin-top:8px"><button class="btn" id="downloadCsv">Download CSV</button> <button class="btn" id="downloadPng">Export PNG</button></div>
+      </div>
+    </div>
+
+    <footer>
+      <div>© 2025 Australian Speeding Analysis &nbsp; &nbsp; Powered by KNIME</div>
+      <div class="muted">Source: BITRE. License: CC BY 4.0. Last updated: 2025-11-13</div>
+    </footer>
+  </div>
+
+  <script src="js/main.js"></script>
+  <script src="js/d3_charts.js"></script>
+</body>
+</html>
