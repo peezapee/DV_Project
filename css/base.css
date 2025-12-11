@@ -1,5 +1,4 @@
-<<<<<<< Updated upstream
-=======
+
 /* base.css - layout, spacing, typography */
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; background:#f3f4f6;color:#111;}
@@ -114,13 +113,4 @@ footer{margin-top:14px;text-align:center;color:#6b7280;font-size:13px}
 
 /* Ensure nav sits below the brand and is centered */
 nav{display:flex;align-items:center;justify-content:center}
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
+
