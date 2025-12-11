@@ -34,8 +34,16 @@ svg.chart{width:100%;height:100%;display:block}
 	.chart-area, #lineChart, #stacked, #ageBar, #jurisdictionBars, #detectionGrouped, #locationBar, #topRegions, #cameraPoliceChart{height:320px}
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 =======
 =======
+=======
+}
+
+@media (max-width:900px){
+	#map{height:280px}
+	.chart-area, #lineChart, #stacked, #ageBar{height:260px}
+>>>>>>> Stashed changes
 }
 
 @media (max-width:900px){
