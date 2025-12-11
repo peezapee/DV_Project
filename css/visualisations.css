@@ -1,0 +1,41 @@
+<<<<<<< Updated upstream
+=======
+/* visualisations.css - styles specific to charts and map containers */
+#map{height:420px;border-radius:6px;overflow:hidden;background:#fbfbfc}
+/* make chart areas larger so content is readable and stretches full width */
+.chart-area, #lineChart, #stacked, #ageBar, #jurisdictionBars, #detectionGrouped, #locationBar, #topRegions, #cameraPoliceChart{height:380px}
+svg.chart{width:100%;height:100%;display:block}
+.chart .axis path, .chart .axis line{stroke:#e6e7eb}
+.chart .axis text{fill:#374151;font-size:11px}
+.axis-label{fill:#374151;font-size:12px;font-weight:700}
+.tooltip{position:absolute;background:rgba(17,17,17,0.94);color:#fff;padding:8px 10px;border-radius:6px;font-size:12px;pointer-events:none;box-shadow:0 4px 14px rgba(2,6,23,0.12)}
+.legend{display:flex;gap:8px;flex-wrap:wrap}
+.legend .item{display:flex;gap:6px;align-items:center}
+.legend .swatch{width:12px;height:12px;border-radius:2px}
+
+/* Map legend: horizontal gradient bar */
+.map-legend{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+.map-legend .gradient{height:10px;border-radius:4px;overflow:hidden}
+.map-legend .labels{display:flex;justify-content:space-between;font-size:11px;color:#374151}
+
+/* Storyboard in sidebar */
+.storyboard{margin-top:14px;padding:10px;border-radius:6px;background:#fff;border:1px solid #e6e7eb}
+.storyboard h4{font-size:13px;margin-bottom:6px}
+.storyboard ol{padding-left:18px;color:#374151;font-size:13px}
+
+/* Stacked legend layout */
+.stack-legend{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.stack-legend .item{display:flex;align-items:center;gap:6px}
+.stack-legend .swatch{width:14px;height:12px;border-radius:2px}
+
+/* Responsive tweaks */
+@media (max-width:1200px){
+	#map{height:360px}
+	.chart-area, #lineChart, #stacked, #ageBar, #jurisdictionBars, #detectionGrouped, #locationBar, #topRegions, #cameraPoliceChart{height:320px}
+}
+
+@media (max-width:900px){
+	#map{height:280px}
+	.chart-area, #lineChart, #stacked, #ageBar{height:260px}
+}
+>>>>>>> Stashed changes

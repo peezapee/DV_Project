@@ -1,0 +1,83 @@
+<<<<<<< Updated upstream
+=======
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Australian Speeding Dashboard</title>
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/visualisations.css">
+  <!-- D3 v7 -->
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="https://unpkg.com/topojson-client@3"></script>
+</head>
+<body data-page="q5">
+  <div class="container">
+    <header class="header-navy">
+      <div class="brand">
+        <a href="index.html" class="home-link" aria-label="Home">
+          <img src="home.svg" alt="Home" class="nav-home" style="width:200px;height:50px;object-fit:contain;" />
+        </a>
+        <div>
+          <div class="brand-title">Australian Speeding Analysis</div>
+        </div>
+      </div>
+      <nav>
+        <a href="index.html">Home</a>
+        <a href="questions.html">Questions</a>
+        <a href="about.html">About Us</a>
+      </nav>
+    </header>
+
+    <main class="dash" style="margin-top:18px">
+      <section class="hero-panel">
+        <div style="max-width:1200px;margin:0 auto">
+          <div class="hero-title">Background</div>
+          <p>The Bureau of Infrastructure and Transport Research Economics (BITRE) has collected and reported Australian road safety enforcement statistics for more than a decade. Among these datasets, the speeding enforcement records capture annual roadside activity across states and territories, including the number of fines issued, detection methods used, and demographic and locational details associated with each offence.</p>
+
+          <p>Since 2023, BITRE has introduced more detailed reporting fields such as location type, age group, arrests, and charges, offering a richer perspective on road safety patterns. However, the current BITRE Police Enforcement Dashboard does not fully integrate or visualise these expanded attributes, limiting users’ ability to explore speeding trends in depth.</p>
+
+          <p>This project uses a cleaned version of the BITRE speeding dataset to build an interactive dashboard that highlights meaningful patterns in speeding offences. The dashboard is designed for exploratory analysis and clear communication, supporting teaching, coursework, and data storytelling.</p>
+        </div>
+      </section>
+
+      <section class="content-panel">
+        <div style="max-width:1200px;margin:0 auto">
+          <h2>Aims &amp; Objectives</h2>
+          <p>Our aim is to design and deliver interactive visualisations that make Australia’s speeding enforcement data intuitive to explore and easy to interpret. By focusing specifically on speeding offences, the dashboard helps users investigate enforcement behaviour, demographic factors, and regional differences that influence road safety outcomes.</p>
+
+          <p>To achieve this, the visualisations are designed to:</p>
+          <ul>
+            <li>Reveal long-term trends in speeding offences across states and territories</li>
+            <li>Enable targeted comparisons by age group, detection method, and location</li>
+            <li>Support geographic and contextual analysis</li>
+            <li>Facilitate user-driven exploration and simple data storytelling</li>
+            <li>Provide a clean, accessible, and reproducible visualisation environment</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Large centered camera vs police chart (overview) -->
+      <section class="panel" style="display:flex;justify-content:center;padding:6px 12px;">
+        <div style="width:100%;max-width:1400px;height:560px;">
+          <div class="panel-title" style="text-align:center">Data Overview</div>
+          <div id="cameraPoliceChart" class="chart-area" style="height:520px;"></div>
+          <div style="text-align:center;margin-top:10px"><a href="questions.html" class="btn">Open Questions</a></div>
+        </div>
+      </section>
+
+    </main>
+
+    <footer style="margin-top:24px;text-align:center;color:#6b7280;font-size:13px">
+      <div>© 2025 Australian Speeding Analysis</div>
+      <div class="footer-sub">Interactive prototype — D3 + HTML/CSS + KNIME</div>
+    </footer>
+  </div>
+
+  <script src="js/main.js"></script>
+  <script src="js/d3_charts.js"></script>
+</body>
+</html>
+                </section>
+>>>>>>> Stashed changes

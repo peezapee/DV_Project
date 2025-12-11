@@ -1,0 +1,117 @@
+<<<<<<< Updated upstream
+=======
+/* base.css - layout, spacing, typography */
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; background:#f3f4f6;color:#111;}
+.container{max-width:1100px;margin:28px auto;padding:20px}
+.header-navy{background:#ffffff;border-radius:6px;padding:18px 20px;color:#0b3d91;border:2px solid #0b3d91;display:flex;flex-direction:column;align-items:center;gap:10px}
+.brand{display:flex;gap:14px;align-items:center;justify-content:center}
+.brand img{height:160px;width:auto;object-fit:contain}
+.brand-title{font-weight:800;font-size:30px;color:#0b3d91}
+.brand-sub{font-size:12px;color:rgba(11,61,145,0.8)}
+nav{display:flex;align-items:center}
+nav a{margin-left:14px;color:#0b3d91;text-decoration:none;font-weight:700;padding:8px 12px;border-radius:10px;background:transparent;border:1px solid transparent;font-size:15px}
+nav a:hover{background:#e6f0ff;border-color:#cce5ff}
+
+/* footer subtext for brand/subtitle */
+.footer-sub{font-size:13px;color:#6b7280;margin-top:6px}
+.main{display:grid;grid-template-columns:260px 1fr;gap:18px;margin-top:18px}
+.sidebar{background:white;border:1px solid #e5e7eb;border-radius:8px;padding:16px}
+.sidebar h3{font-size:15px;margin-bottom:10px}
+.control{margin:10px 0}
+select,input[type=range]{width:100%}
+.multiselect{height:72px}
+.actions{display:flex;gap:8px;margin-top:10px}
+.btn{padding:8px 10px;border-radius:6px;border:1px solid #d1d5db;background:#fff;cursor:pointer}
+.dash{display:grid;grid-template-rows:auto auto 1fr;gap:12px}
+.title{background:white;border:1px solid #e5e7eb;border-radius:8px;padding:18px;text-align:center}
+.title h1{font-size:28px;line-height:1.05}
+.kpis{display:flex;gap:12px;align-items:flex-start}
+.kpi{background:#fff;border-radius:6px;padding:12px}
+.big-kpi{flex:0 0 360px;border:1px solid rgba(0,0,0,0.06);text-align:left}
+.big-kpi h4{font-size:13px;color:#93b8d6;margin-bottom:6px}
+.big-kpi p{font-size:32px;font-weight:800;color:#0b3d91}
+.k-sub{font-size:13px;color:#6b7280;margin-top:6px}
+.small-kpis{display:flex;flex-direction:column;gap:8px;flex:1}
+.small-box{background:#0b3d91;color:#fff;padding:10px;border-radius:6px}
+.small-box h5{font-size:12px;margin-bottom:6px}
+.small-box p{font-size:18px;font-weight:700}
+.arrests-charges{flex:0 0 160px;border:1px solid rgba(0,0,0,0.06);padding:8px;border-radius:6px}
+.arrests-charges .arrests,.arrests-charges .charges{margin-bottom:8px}
+.arrests-charges h5{font-size:12px;color:#6b7280}
+.arrests-charges p{font-size:18px;font-weight:700}
+.visuals{display:grid;grid-template-columns:1fr 420px;gap:12px;align-items:start;margin-top:6px}
+.panel{background:white;border:1px solid #e5e7eb;border-radius:8px;padding:12px;min-height:180px}
+.panel-title{font-weight:700;margin-bottom:8px}
+.map-placeholder{display:flex;align-items:center;justify-content:center;height:260px;background:linear-gradient(90deg,#eef2ff,#fff);color:#6b7280;font-weight:700}
+.charts{display:flex;flex-direction:column;gap:12px}
+.small-row{display:flex;gap:12px}
+.chart-mini{flex:1;height:120px;display:flex;align-items:center;justify-content:center;color:#6b7280}
+footer{margin-top:14px;text-align:center;color:#6b7280;font-size:13px}
+.insights-row{margin-top:18px;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.panel.small{min-height:120px}
+.muted{font-size:12px;color:#6b7280;margin-top:6px}
+.chart-area{height:160px;display:flex;align-items:center;justify-content:center;color:#6b7280}
+/* Hero / background panel (index) */
+.hero-panel{
+	background:#071a61;
+	color:#fff;
+	padding:34px 40px;
+	border-radius:10px;
+	box-shadow:0 18px 40px rgba(7,26,97,0.12);
+	margin-bottom:28px;
+}
+.hero-panel .hero-title{font-size:18px;font-weight:800;letter-spacing:1.6px;text-transform:uppercase;margin-bottom:12px;color:#fff}
+.hero-panel p{font-size:16px;line-height:1.65;color:rgba(255,255,255,0.95);margin:8px 0}
+
+/* Centered variant for hero panels (used on Questions page) */
+.hero-panel.hero-center{text-align:center}
+.hero-panel.hero-center .hero-title{display:block;margin:0 auto 12px}
+.hero-panel.hero-center p{margin:8px auto}
+
+/* Question cards grid on Questions page */
+.question-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.question-card{background:#fff;border-radius:14px;padding:22px;display:flex;flex-direction:column;align-items:flex-start;gap:12px;text-decoration:none;border:1px solid #f1f5f9;box-shadow:0 10px 30px rgba(7,26,97,0.04)}
+.question-card img{width:120px;height:120px;object-fit:contain;align-self:center}
+.question-card .q-title{font-weight:800;color:#0b3d91;font-size:18px}
+.question-card .q-desc{color:#9aa6bf;font-size:14px;line-height:1.5}
+.question-card:hover{box-shadow:0 18px 40px rgba(7,26,97,0.08);transform:translateY(-4px)}
+
+@media (max-width:1100px){
+	.question-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media (max-width:700px){
+	.question-grid{grid-template-columns:1fr}
+	.question-card{align-items:center;text-align:center}
+	.question-card img{width:140px;height:140px}
+}
+
+/* Legend rendered outside SVG for larger line charts */
+.chart-legend-outside{position:absolute;top:12px;right:12px;display:flex;flex-direction:column;gap:8px;z-index:4}
+.chart-legend-outside .legend-item{display:flex;align-items:center;gap:8px;font-size:13px;color:#111827}
+.chart-legend-outside .legend-swatch{width:14px;height:14px;border-radius:2px;display:inline-block}
+.chart-legend-outside .legend-label{line-height:1}
+
+@media (max-width:700px){
+	.chart-legend-outside{position:relative;top:auto;right:auto;flex-direction:row;justify-content:center;margin-top:12px}
+	.chart-legend-outside .legend-item{font-size:13px}
+}
+
+/* Content panel for aims/long-form text */
+.content-panel{background:transparent;padding:0;border:none;margin-bottom:18px}
+.content-panel h2{font-size:22px;color:#071a61;margin-bottom:12px}
+.content-panel p{font-size:16px;line-height:1.7;color:#0b1730;max-width:1100px}
+.content-panel ul{margin-top:12px;margin-left:28px}
+.content-panel li{margin-bottom:8px}
+@media (max-width:900px){
+	.main{grid-template-columns:1fr}
+	.visuals{grid-template-columns:1fr}
+	nav a{display:none}
+	.brand img{width:80px;height:80px}
+	.brand-title{font-size:20px}
+	.header-navy{padding:12px}
+}
+
+/* Ensure nav sits below the brand and is centered */
+nav{display:flex;align-items:center;justify-content:center}
+>>>>>>> Stashed changes

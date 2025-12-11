@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Questions — Australian Speeding Analysis</title>
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/visualisations.css">
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="https://unpkg.com/topojson-client@3"></script>
+</head>
+<body data-page="questions">
+  <div class="container">
+    <header class="header-navy">
+      <div class="brand">
+        <a href="index.html" class="home-link" aria-label="Home">
+          <img src="home.svg" alt="Home" class="nav-home" style="width:200px;height:50px;object-fit:contain;" />
+        </a>
+        <div>
+          <div class="brand-title">Australian Speeding Analysis</div>
+        </div>
+      </div>
+      <nav>
+        <a href="index.html">Home</a>
+        <a href="questions.html">Questions</a>
+        <a href="about.html">About Us</a>
+      </nav>
+    </header>
+
+    <main class="dash" style="margin-top:18px">
+      <section class="hero-panel hero-center">
+        <div style="max-width:1200px;margin:0 auto">
+          <div class="hero-title">Interactive Questions</div>
+          <p>Select a question below to open the focused interactive visualisation.</p>
+        </div>
+      </section>
+
+      <div class="question-grid" style="margin-top:18px">
+        <a class="question-card" href="map.html" aria-label="Open Map">
+          <img src="images/australia.jpg" alt="Map" />
+          <div class="q-title">1) Where are fines concentrated?</div>
+          <div class="q-desc">How have speeding offences changed across Australian states and territories from 2008 to 2024? </div>
+        </a>
+
+        <a class="question-card" href="trends.html" aria-label="Open Trends">
+          <img src="images/trend.png" alt="Trends" />
+          <div class="q-title">2) How have fines changed over time?</div>
+          <div class="q-desc">See annual trends and click a year to filter. </div>
+        </a>
+
+        <a class="question-card" href="detection.html" aria-label="Open Detection">
+          <img src="images/camera.webp" alt="Detection" />
+          <div class="q-title">3) Which detection methods are used?</div>
+          <div class="q-desc">Which detection methods contribute most to speeding fines? </div>
+        </a>
+
+        <a class="question-card" href="age.html" aria-label="Open Age Groups">
+          <img src="images/age.png" alt="Age groups" />
+          <div class="q-title">4) Which age group receives fines?</div>
+          <div class="q-desc">Which age groups are most frequently fined for speeding offences? </div>
+        </a>
+
+        <a class="question-card" href="top-regions.html" aria-label="Open Top Regions">
+          <img src="images/region.png" alt="Top regions" />
+          <div class="q-title">5) Which regions have the most fines?</div>
+          <div class="q-desc">Which location (urban vs rural, or by jurisdiction) record the highest number of speeding offences? </div>
+        </a>
+      </div>
+
+    </main>
+
+    <footer style="margin-top:24px;text-align:center;color:#6b7280;font-size:13px">
+      <div>© 2025 Australian Speeding Analysis</div>
+      <div class="footer-sub">Interactive prototype — D3 + HTML/CSS + KNIME</div>
+    </footer>
+  </div>
+
+  <script src="js/main.js"></script>
+  <script src="js/d3_charts.js"></script>
+</body>
+</html>
