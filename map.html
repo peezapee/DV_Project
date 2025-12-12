@@ -27,8 +27,16 @@
       </nav>
     </header>
 
-    <div class="main">
-      <aside class="sidebar">
+    <!-- Hero above grid for full-width alignment -->
+    <section class="hero-panel hero-center">
+      <div style="max-width:1200px;margin:0 auto">
+        <div class="hero-title">How have speeding offences changed across Australian states and territories from 2008 to 2024?</div>
+        <p>Click a state to filter and explore.</p>
+      </div>
+    </section>
+
+    <div class="main" style="align-items:flex-start">
+      <aside class="sidebar" id="filters">
         <h3>Filters</h3>
         <div class="control">
           <label>Jurisdiction</label>
@@ -40,18 +48,10 @@
         <!-- Detection method and Location type removed for map page (not needed) -->
         <div class="actions">
           <button class="btn" id="reset">Reset filters</button>
-          <button class="btn" id="share">Share view</button>
         </div>
       </aside>
 
       <main class="dash">
-          <section class="hero-panel hero-center">
-            <div style="max-width:1200px;margin:0 auto">
-              <div class="hero-title">How have speeding offences changed across Australian states and territories from 2008 to 2024?</div>
-              <p>Click a state to filter and explore.</p>
-            </div>
-          </section>
-
         <div class="visuals" style="grid-template-columns:1fr;">
           <section class="panel" style="width:100%">
               <div class="panel-title">Camera-detected vs Officer-issued fines (2008–2024)</div>
@@ -59,6 +59,11 @@
           </section>
         </div>
         </main>
+      </div>
+
+      <div class="pager-row">
+        <a href="questions.html" class="pager-btn" aria-label="Back to Questions">← Back</a>
+        <a href="trends.html" class="pager-btn next" aria-label="Next: Trends">Next →</a>
       </div>
 
       <footer style="margin-top:24px;text-align:center;color:#6b7280;font-size:13px">

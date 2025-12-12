@@ -1,73 +1,87 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Trends — Australian Speeding Analysis</title>
-  <link rel="stylesheet" href="css/base.css">
-  <link rel="stylesheet" href="css/visualisations.css">
-  <script src="https://d3js.org/d3.v7.min.js"></script>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>Trends — Australian Speeding Analysis</title>
+	<link rel="stylesheet" href="css/base.css">
+	<link rel="stylesheet" href="css/visualisations.css">
+	<script src="https://d3js.org/d3.v7.min.js"></script>
 </head>
 <body data-page="q1">
-  <div class="container">
-    <header class="header-navy">
-      <div class="brand">
-        <a href="index.html" class="home-link" aria-label="Home">
-          <img src="home.svg" alt="Home" class="nav-home" style="width:200px;height:50px;object-fit:contain;" />
-        </a>
-        <div>
-          <div class="brand-title">Australian Speeding Analysis</div>
-        </div>
-      </div>
-      <nav>
-        <a href="index.html">Home</a>
-        <a href="questions.html">Questions</a>
-        <a href="about.html">About Us</a>
-      </nav>
-    </header>
+	<div class="container">
+		<header class="header-navy">
+			<div class="brand">
+				<a href="index.html" class="home-link" aria-label="Home">
+					<img src="home.svg" alt="Home" class="nav-home" style="width:200px;height:50px;object-fit:contain;" />
+				</a>
+				<div>
+					<div class="brand-title">Australian Speeding Analysis</div>
+				</div>
+			</div>
+			<nav>
+				<a href="index.html">Home</a>
+				<a href="questions.html">Questions</a>
+				<a href="about.html">About Us</a>
+			</nav>
+		</header>
 
-    <div class="main">
-      <aside class="sidebar">
-        <h3>Filters</h3>
-        <div class="control">
-          <label>Detection method</label>
-          <select multiple id="detection" class="multiselect">
-            <option value="Fixed or mobile camera">Fixed or mobile camera</option>
-            <option value="Police issued">Police issued</option>
-          </select>
-        </div>
-        <div class="actions">
-          <button class="btn" id="reset">Reset filters</button>
-          <button class="btn" id="share">Share view</button>
-        </div>
-      </aside>
+		<!-- Move hero above the grid so it spans full container width -->
+		<section class="hero-panel hero-center">
+			<div style="max-width:1200px;margin:0 auto">
+				<div class="hero-title">How have fines changed over the time?</div>
+				<p>Click a detection method to set the filter.</p>
+			</div>
+		</section>
 
-      <main class="dash">
-        <section class="hero-panel hero-center">
-          <div style="max-width:1200px;margin:0 auto">
-            <div class="hero-title">How have fines changed over the time?</div>
-            <p>Click a detection method to set the filter.</p>
-          </div>
-        </section>
+		<div class="main" style="align-items:flex-start">
+			<aside class="sidebar" id="filters">
+				<h3>Filters</h3>
+				<div class="control">
+					<label>Detection method</label>
+					<select id="detection"></select>
+				</div>
+				<div class="filter-group"></div>
+				<div class="year-range">
+				  <div class="control">
+					  <label>Start year</label>
+					  <input type="number" id="yearStart" />
+				  </div>
+				  <div class="control">
+					  <label>End year</label>
+					  <input type="number" id="yearEnd" />
+				  </div>
+				</div>
+				<div class="muted">Years are limited by the selected detection method.</div>
+				<div class="actions">
+					<button class="btn" id="reset">Reset filters</button>
+				</div>
+			</aside>
+			<main class="dash">
+				<div class="visuals" style="grid-template-columns:1fr;">
+					<section class="panel" style="width:100%">
+						<div class="panel-title">A — Annual trend (2008–2024)</div>
+						<div id="lineChart" class="chart-area"></div>
+					</section>
+				</div>
 
-        <div class="visuals" style="grid-template-columns:1fr;">
-          <section class="panel" style="width:100%">
-            <div class="panel-title">A — Annual trend (2008–2024)</div>
-            <div id="lineChart" class="chart-area"></div>
-          </section>
-        </div>
+			</main>
 
-      </main>
+		</div>
 
-    </div>
+		<div class="pager-row">
+			<a href="questions.html" class="pager-btn" aria-label="Back to Questions">← Back</a>
+			<a href="detection.html" class="pager-btn next" aria-label="Next: Detection methods">Next →</a>
+		</div>
 
-    <footer>
-      <div>© 2025 Australian Speeding Analysis</div>
-      <div class="footer-sub">Interactive prototype — D3 + HTML/CSS + KNIME</div>
-    </footer>
-  </div>
+		<footer>
+			<div>© 2025 Australian Speeding Analysis</div>
+			<div class="footer-sub">Interactive prototype — D3 + HTML/CSS + KNIME</div>
+		</footer>
+	</div>
 
-  <script src="js/main.js"></script>
-  <script src="js/d3_charts.js"></script>
+	<script src="js/main.js"></script>
+	<script src="js/d3_charts.js"></script>
 </body>
 </html>
+

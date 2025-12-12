@@ -3,7 +3,7 @@
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; background:#f3f4f6;color:#111;}
 .container{max-width:1100px;margin:28px auto;padding:20px}
-.header-navy{background:#ffffff;border-radius:6px;padding:18px 20px;color:#0b3d91;border:2px solid #0b3d91;display:flex;flex-direction:column;align-items:center;gap:10px}
+.header-navy{background:#ffffff;border-radius:6px;padding:18px 20px;color:#0b3d91;border:2px solid #0b3d91;display:flex;flex-direction:column;align-items:center;gap:10px;margin-bottom:16px}
 .brand{display:flex;gap:14px;align-items:center;justify-content:center}
 .brand img{height:160px;width:auto;object-fit:contain}
 .brand-title{font-weight:800;font-size:30px;color:#0b3d91}
@@ -20,8 +20,31 @@ nav a:hover{background:#e6f0ff;border-color:#cce5ff}
 .control{margin:10px 0}
 select,input[type=range]{width:100%}
 .multiselect{height:72px}
-.actions{display:flex;gap:8px;margin-top:10px}
-.btn{padding:8px 10px;border-radius:6px;border:1px solid #d1d5db;background:#fff;cursor:pointer}
+.sidebar{padding:18px;border:1px solid rgba(11,61,145,0.06);box-shadow:0 6px 18px rgba(7,26,97,0.04)}
+.sidebar h3{font-size:13px;color:#0b3d91;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:12px}
+.filter-group{padding:8px 0;margin-bottom:8px;border-bottom:1px dashed #eef6ff}
+.control label{display:block;font-weight:700;font-size:13px;color:#0b3d91;margin-bottom:6px}
+select,input[type="range"],input[type="number"],.multiselect{border:1px solid #e6eefb;padding:8px;border-radius:8px;background:#fff}
+select:focus,input[type="range"]:focus{outline:none;box-shadow:0 0 0 4px rgba(11,61,145,0.06);border-color:#0b3d91}
+.year-range{display:flex;gap:10px}
+.year-range .control{flex:1;margin:0}
+.year-range input[type="number"]{text-align:center}
+.control .muted{font-size:12px;color:#6b7280;margin-top:6px}
+.btn{padding:8px 10px;border-radius:8px;border:1px solid transparent;background:#0b3d91;color:#fff;cursor:pointer}
+.btn.secondary{background:#fff;color:#0b3d91;border:1px solid rgba(11,61,145,0.08)}
+
+/* Tighter spacing for filter inputs on small screens */
+@media (max-width:900px){
+	.sidebar{padding:12px}
+	.control{margin:8px 0}
+}
+.actions{display:flex;gap:12px;margin-top:12px;align-items:center;flex-wrap:wrap}
+.actions .btn{flex:0 1 calc(50% - 6px);min-width:0;padding:8px 10px;border-radius:8px;border:1px solid rgba(11,61,145,0.08);background:#0b3d91;color:#fff;font-weight:700;text-align:center}
+.actions .btn.secondary{background:#fff;color:#0b3d91;border:1px solid rgba(11,61,145,0.12)}
+
+@media (max-width:500px){
+	.actions .btn{flex:1 1 100%}
+}
 .dash{display:grid;grid-template-rows:auto auto 1fr;gap:12px}
 .title{background:white;border:1px solid #e5e7eb;border-radius:8px;padding:18px;text-align:center}
 .title h1{font-size:28px;line-height:1.05}
@@ -85,6 +108,21 @@ footer{margin-top:14px;text-align:center;color:#6b7280;font-size:13px}
 	.question-card img{width:140px;height:140px}
 }
 
+/* Back button row for Questions page */
+.back-row{display:flex;justify-content:center;align-items:center;margin-top:10px;margin-bottom:8px}
+.back-row .back-btn{padding:10px 16px;border-radius:999px;border:1px solid rgba(11,61,145,0.14);background:#fff;color:#0b3d91;font-weight:800;letter-spacing:0.3px;box-shadow:0 10px 24px rgba(7,26,97,0.06)}
+.back-row .back-btn:hover{background:#eef6ff;border-color:#cfe2ff}
+
+/* Pager row (Back / Next) for visualisation pages */
+.pager-row{display:flex;justify-content:space-between;align-items:center;margin:10px 0 8px}
+.pager-row .pager-btn{padding:10px 16px;border-radius:999px;border:1px solid rgba(11,61,145,0.14);background:#fff;color:#0b3d91;font-weight:800;letter-spacing:0.3px;box-shadow:0 10px 24px rgba(7,26,97,0.06);text-decoration:none}
+.pager-row .pager-btn:hover{background:#eef6ff;border-color:#cfe2ff}
+.pager-row .next{margin-left:auto}
+
+/* CTA row (centered button) for landing page */
+.cta-row{display:flex;justify-content:center;align-items:center;margin-top:8px;margin-bottom:8px}
+.cta-row .btn{padding:12px 18px;border-radius:999px;font-weight:800;box-shadow:0 10px 24px rgba(7,26,97,0.06)}
+
 /* Legend rendered outside SVG for larger line charts */
 .chart-legend-outside{position:absolute;top:12px;right:12px;display:flex;flex-direction:column;gap:8px;z-index:4}
 .chart-legend-outside .legend-item{display:flex;align-items:center;gap:8px;font-size:13px;color:#111827}
@@ -113,4 +151,19 @@ footer{margin-top:14px;text-align:center;color:#6b7280;font-size:13px}
 
 /* Ensure nav sits below the brand and is centered */
 nav{display:flex;align-items:center;justify-content:center}
+
+/* About / Team cards */
+.team-grid{display:flex;gap:20px;align-items:stretch;justify-content:space-between;margin-top:14px}
+.team-card{flex:1;background:#fff;border-radius:12px;padding:20px;border:1px solid rgba(11,61,145,0.08);box-shadow:0 8px 24px rgba(7,26,97,0.06);display:flex;flex-direction:column;gap:10px;min-height:180px}
+.team-card h3{font-size:18px;color:#0b3d91;margin-bottom:4px}
+.team-card p{color:#374151;line-height:1.5}
+.team-card .muted{color:#6b7280}
+.chip{display:inline-block;padding:6px 12px;border-radius:999px;background:#eef6ff;color:#0b3d91;font-weight:800;font-size:12px;margin-right:8px;margin-top:8px;letter-spacing:0.3px}
+.team-note{max-width:900px;margin:16px auto 0; text-align:center; background:#eef6ff; color:#0b3d91; font-weight:700; padding:12px 16px; border:1px solid rgba(11,61,145,0.12); border-radius:12px; box-shadow:0 8px 24px rgba(7,26,97,0.06)}
+.hero-meta{margin-top:6px}
+
+@media (max-width:900px){
+	.team-grid{flex-direction:column}
+	.team-card{width:100%}
+}
 

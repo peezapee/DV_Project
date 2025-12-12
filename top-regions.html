@@ -1,81 +1,77 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Top regions — Australian Speeding Analysis</title>
-  <link rel="stylesheet" href="css/base.css">
-  <link rel="stylesheet" href="css/visualisations.css">
-  <script src="https://d3js.org/d3.v7.min.js"></script>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>Top regions — Australian Speeding Analysis</title>
+	<link rel="stylesheet" href="css/base.css">
+	<link rel="stylesheet" href="css/visualisations.css">
+	<script src="https://d3js.org/d3.v7.min.js"></script>
 </head>
 <body data-page="q4">
-  <div class="container">
-    <header class="header-navy">
-      <div class="brand">
-        <a href="index.html" class="home-link" aria-label="Home">
-          <img src="home.svg" alt="Home" class="nav-home" style="width:200px;height:50px;object-fit:contain;" />
-        </a>
-        <div>
-          <div class="brand-title">Australian Speeding Analysis</div>
-        </div>
-      </div>
-      <nav>
-        <a href="index.html">Home</a>
-        <a href="questions.html">Questions</a>
-        <a href="about.html">About Us</a>
-      </nav>
-    </header>
+	<div class="container">
+		<header class="header-navy">
+			<div class="brand">
+				<a href="index.html" class="home-link" aria-label="Home">
+					<img src="home.svg" alt="Home" class="nav-home" style="width:200px;height:50px;object-fit:contain;" />
+				</a>
+				<div>
+					<div class="brand-title">Australian Speeding Analysis</div>
+				</div>
+			</div>
+			<nav>
+				<a href="index.html">Home</a>
+				<a href="questions.html">Questions</a>
+				<a href="about.html">About Us</a>
+			</nav>
+		</header>
 
-    <div class="main">
-      <aside class="sidebar">
-        <h3>Filters</h3>
-        <div class="control">
-          <label>Jurisdiction</label>
-          <select id="jurisdiction">
-            <option value="all">All states & territories</option>
-          </select>
-        </div>
-        <div class="control">
-          <label>Year</label>
-          <input id="yearRange" type="range" min="2008" max="2024" value="2016" />
-          <div class="muted">Selected year: <span id="yr">2016</span></div>
-        </div>
-        <div class="control">
-          <label>Detection method</label>
-          <select multiple id="detection" class="multiselect"></select>
-        </div>
-        <div class="control">
-          <label>Location type</label>
-          <select id="locType"><option>All</option></select>
-        </div>
-        <div class="actions">
-          <button class="btn" id="reset">Reset filters</button>
-          <button class="btn" id="share">Share view</button>
-        </div>
-      </aside>
+		<!-- Hero above grid for full-width alignment -->
+		<section class="hero-panel hero-center">
+			<div style="max-width:1200px;margin:0 auto">
+				<div class="hero-title">Which jurisdiction has the highest number of speeding offences?</div>
+				<p>Depending on the year, the distribution of speeding offences varies across jurisdictions.</p>
+			</div>
+		</section>
 
-      <main class="dash">
-        <div class="title">
-          <h1>Top regions by fines</h1>
-          <div class="subtitle">Top 10 regions (by selected filters)</div>
-        </div>
+		<div class="main" style="align-items:flex-start">
+			<aside class="sidebar" id="filters">
+				<h3>Filters</h3>
+				<div class="control">
+					<label>Year</label>
+					<input id="yearRange" type="range" min="2008" max="2024" value="2016" />
+					<div class="muted">Selected year: <span id="yr">2016</span></div>
+				</div>
+				<div class="actions">
+					<button class="btn" id="reset">Reset filters</button>
+				</div>
+			</aside>
 
-        <div class="visuals">
-          <section class="panel small">
-            <div class="panel-title">Location comparison — Urban vs Rural (or by location type)</div>
-            <div id="locationBar" class="chart-area">Loading location comparison...</div>
-          </section>
-        </div>
+			<main class="dash">
+				<div class="visuals" style="grid-template-columns:1fr;">
+					<section class="panel">
+						<div class="panel-title">Sum of fines by jurisdiction</div>
+						<div id="topRegions" class="chart-area"></div>
+					</section>
+				</div>
 
-      </main>
+			</main>
 
-    <footer>
-      <div>© 2025 Australian Speeding Analysis</div>
-      <div class="footer-sub">Interactive prototype — D3 + HTML/CSS + KNIME</div>
-    </footer>
-  </div>
+			</div>
 
-  <script src="js/main.js"></script>
-  <script src="js/d3_charts.js"></script>
+			<div class="pager-row">
+				<a href="questions.html" class="pager-btn" aria-label="Back to Questions">← Back</a>
+				<a href="about.html" class="pager-btn next" aria-label="Next: About">Next →</a>
+			</div>
+
+			<footer style="margin-top:24px;text-align:center;color:#6b7280;font-size:13px">
+			<div>© 2025 Australian Speeding Analysis</div>
+			<div class="footer-sub">Interactive prototype — D3 + HTML/CSS + KNIME</div>
+		</footer>
+		</div>
+
+	<script src="js/main.js"></script>
+	<script src="js/d3_charts.js"></script>
 </body>
 </html>
+

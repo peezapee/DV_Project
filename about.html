@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>About — Australian Speeding Analysis</title>
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/visualisations.css">
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="https://unpkg.com/topojson-client@3"></script>
+</head>
+<body data-page="about">
+  <div class="container">
+    <header class="header-navy">
+      <div class="brand">
+        <a href="index.html" class="home-link" aria-label="Home">
+          <img src="home.svg" alt="Home" class="nav-home" style="width:200px;height:50px;object-fit:contain;" />
+        </a>
+        <div>
+          <div class="brand-title">Australian Speeding Analysis</div>
+        </div>
+      </div>
+      <nav>
+        <a href="index.html">Home</a>
+        <a href="questions.html">Questions</a>
+        <a href="about.html">About Us</a>
+      </nav>
+    </header>
+
+    <main class="dash" style="margin-top:18px">
+      <section class="hero-panel">
+        <div style="max-width:1200px;margin:0 auto">
+          <div class="hero-title">Project overview</div>
+          <p class="muted">This project converts cleaned BITRE speeding enforcement data into an interactive D3.js dashboard for exploration and teaching. The site provides per-jurisdiction, detection-method and demographic breakdowns of fines across Australia.</p>
+          <p class="muted hero-meta">Course: COS30045 Data Visualisation, Swinburne University of Technology</p>
+          <p class="muted hero-meta">Stack: D3.js, HTML/CSS, KNIME &nbsp;•&nbsp; Language: JavaScript</p>
+        </div>
+      </section>
+
+      <section class="content-panel">
+        <div style="max-width:1200px;margin:0 auto">
+          <h2>Team</h2>
+          <div class="team-grid">
+            <div class="team-card">
+              <h3>Elijah Wei Ern PEE</h3>
+              <div class="muted">Student ID: 104401115</div>
+              <div class="chip">DATA SCIENCE</div>
+              <div class="chip">SWINBURNE STUDENT</div>
+              <p>Contributed to data cleaning, feature engineering, chart implementation and layout design. Worked on interactive filtering and export functionality.</p>
+            </div>
+
+            <div class="team-card">
+              <h3>Megan Serafina Jie CHEN</h3>
+              <div class="muted">Student ID: 102776581</div>
+              <div class="chip">ARTIFICIAL INTELLIGENCE</div>
+              <div class="chip">SWINBURNE STUDENT</div>
+              <p>Focused on data validation, visual encoding choices, accessibility and polishing chart tooltips and legends.</p>
+            </div>
+          </div>
+
+          <p class="team-note">We contributed equally from concept to delivery and welcome any feedback or questions.</p>
+        </div>
+      </section>
+    </main>
+
+    <footer style="margin-top:24px;text-align:center;color:#6b7280;font-size:13px">
+      <div>© 2025 Australian Speeding Analysis</div>
+      <div class="footer-sub">Interactive prototype — D3 + HTML/CSS + KNIME</div>
+    </footer>
+  </div>
+
+  <script src="js/main.js"></script>
+  <script src="js/d3_charts.js"></script>
+</body>
+</html>

@@ -54,14 +54,14 @@
     d.detection_method = d['DETECTION_METHOD'] || d['DETECTION_GROUP'] || d['detection_method'] || 'Unknown';
     // normalize detection method to two canonical categories used across the site
     const dm = (d.detection_method || '').toString().toLowerCase();
-    if(dm.includes('camera') || dm.includes('cam') || dm.includes('mobile') || dm.includes('fixed')){
-      d.detection_method = 'Fixed or mobile camera';
+    if(dm.includes('camera') || dm.includes('cam') || dm.includes('mobile') || dm.includes('fixed') || dm.includes('other')){
+      // map camera-like and unknown/other to 'Camera'
+      d.detection_method = 'Camera';
     } else if(dm.includes('officer') || dm.includes('police') || dm.includes('offence') || dm.includes('issued')){
-      // map officer-issued / police variants to 'Police issued'
-      d.detection_method = 'Police issued';
+      d.detection_method = 'Police';
     } else {
-      // anything else will be grouped as 'Other' (not exposed in the detection selector)
-      d.detection_method = 'Other';
+      // default to Camera for any unrecognised values
+      d.detection_method = 'Camera';
     }
     d.metric = d['METRIC'] || d.metric || '';
     d.fines_count = d['FINES'] ? +d['FINES'] : (d.fines_count? +d.fines_count : 0);
@@ -73,6 +73,8 @@
   let activeState = 'all';
   const yearEl = document.getElementById('yearRange');
   let activeYear = yearEl ? +yearEl.value : null;
+  let activeYearStart = null;
+  let activeYearEnd = null;
   let activeDetections = [];
   let activeLoc = 'All';
 
@@ -91,15 +93,29 @@
         // no range control on this page; pick latest year by default
         activeYear = maxY;
       }
+
+      // For trends page, setup start/end year inputs
+      if(page === 'q1'){
+        const ys = document.getElementById('yearStart');
+        const ye = document.getElementById('yearEnd');
+        if(ys && ye){
+          ys.min = minY; ys.max = maxY; ye.min = minY; ye.max = maxY;
+          activeYearStart = activeYearStart || minY;
+          activeYearEnd = activeYearEnd || maxY;
+          ys.value = activeYearStart; ye.value = activeYearEnd;
+        }
+      }
     }
 
-    // Detection methods (restrict to two canonical options)
-    const allowedDetections = ['Fixed or mobile camera', 'Police issued'];
+    // Detection methods — include a 'Both' convenience option on most pages
+    // but exclude it on the trends page (q1) per page-specific UX
+    const globalDetections = ['Both', 'Camera', 'Police'];
+    const defaultDetections = ['Camera', 'Police'];
     const detectionSelect = document.getElementById('detection');
     if(detectionSelect){
       detectionSelect.innerHTML = '';
-      // only expose the two allowed options (keeps UI focused)
-      allowedDetections.forEach(m=>{
+      const toUse = (page === 'q1') ? defaultDetections : globalDetections;
+      toUse.forEach(m=>{
         const opt = document.createElement('option'); opt.value = m; opt.text = m; detectionSelect.appendChild(opt);
       });
     }
@@ -114,9 +130,14 @@
     }
 
     // Jurisdiction select: ensure values include CSV jurisdictions (preserve 'All' first)
-    const jurisSet = Array.from(new Set(data.map(d=> d.state).filter(Boolean)));
+    // Filter out noisy placeholder entries like 'All states & territories' and 'JURISDICTION'
+    const jurisSet = Array.from(new Set(data.map(d=> d.state).filter(Boolean))).filter(j=> j && !/^(all states & territories|jurisdiction)$/i.test(j));
     const jurisSelect = document.getElementById('jurisdiction');
     if(jurisSelect){
+      // ensure there's a top-level 'All' option so users can select all jurisdictions
+      if(!Array.from(jurisSelect.options).some(o => (o.value || '').toString().toLowerCase() === 'all')){
+        const allOpt = document.createElement('option'); allOpt.value = 'all'; allOpt.text = 'All'; jurisSelect.appendChild(allOpt);
+      }
       // keep existing 'all' option, then add any missing jurisdictions
       const existing = Array.from(jurisSelect.options).map(o=> o.value || o.text);
       jurisSet.forEach(j=>{
@@ -124,13 +145,21 @@
           const opt = document.createElement('option'); opt.text = j; opt.value = j; jurisSelect.appendChild(opt);
         }
       });
+      // default selection per page: for detection (q3) default to 'All', for top-regions (q4) default to NSW
+      try{
+        const opts = Array.from(jurisSelect.options).map(o=> (o.value || '').toString());
+        if(page === 'q3' && opts.includes('all')){ jurisSelect.value = 'all'; activeState = 'all'; }
+        else if(page === 'q4' && opts.includes('NSW')){ jurisSelect.value = 'NSW'; activeState = 'NSW'; }
+      }catch(e){}
     }
   })();
 
   // filter helpers
   function getFiltered(){
     return data.filter(d=> (activeState==='all' || d.state===activeState) &&
-                           (!activeYear || d.year==activeYear) &&
+                           // On trends page, use year range; elsewhere use single year if provided
+                           ((page==='q1' && (!activeYearStart || !activeYearEnd || (d.year>=activeYearStart && d.year<=activeYearEnd))) ||
+                            (page!=='q1' && (!activeYear || d.year==activeYear))) &&
                            (activeDetections.length===0 || activeDetections.includes(d.detection_method)) &&
                            (activeLoc==='All' || d.location===activeLoc)
                          );
@@ -228,15 +257,18 @@
   // Line chart: annual total fines (click a point to set year filter)
   function renderLine(filtered){
     const container = d3.select('#lineChart'); container.selectAll('*').remove();
-    const margin = {top:12,right:16,bottom:30,left:48};
+    // increase left and bottom margins so axis tick labels and axis label are readable
+    const margin = {top:12,right:16,bottom:40,left:72};
     const w = container.node().clientWidth; const h = 220;
     const svg = container.append('svg').attr('class','chart').attr('viewBox',`0 0 ${w} ${h}`);
     const g = svg.append('g').attr('transform',`translate(${margin.left},${margin.top})`);
     const innerW = w - margin.left - margin.right; const innerH = h - margin.top - margin.bottom;
 
-    // Build series by year using the full dataset but applying current state/detection/location filters (ignore activeYear)
-    const baseFiltered = data.filter(d=> (activeState==='all' || d.state===activeState) && (activeDetections.length===0 || activeDetections.includes(d.detection_method)) && (activeLoc==='All' || d.location===activeLoc));
-    const byYear = Array.from(d3.rollup(baseFiltered, v=> d3.sum(v, d=> d.fines_count||0), d=> d.year)).map(([year, fines])=> ({year: +year, fines})).sort((a,b)=> a.year - b.year);
+    // Build series by year using the "filtered" dataset (already respects year range on trends page)
+    const byYear = Array.from(d3.rollup(filtered, v=> d3.sum(v, d=> d.fines_count||0), d=> d.year))
+      .map(([year, fines])=> ({year: +year, fines}))
+      .filter(d=> !isNaN(d.year))
+      .sort((a,b)=> a.year - b.year);
     if(byYear.length===0){ g.append('text').text('No data').attr('x',10).attr('y',20); return; }
 
     const x = d3.scaleLinear().domain(d3.extent(byYear, d=> d.year)).range([0, innerW]);
@@ -261,6 +293,19 @@
     g.append('g').attr('class','axis').call(yAxis);
 
     svg.append('text').attr('class','axis-label').attr('x', (w/2)).attr('y', h - 6).attr('text-anchor','middle').text('Year');
+  }
+
+  // Ensure sidebar height matches the chart panel height (used across pages)
+  function setSidebarHeight(){
+    try{
+      const visuals = document.querySelector('.visuals');
+      const panelEl = visuals ? visuals.querySelector('section.panel') : null;
+      const sidebarEl = document.getElementById('filters');
+      if(panelEl && sidebarEl){
+        const ph = panelEl.offsetHeight;
+        sidebarEl.style.minHeight = ph + 'px';
+      }
+    }catch(e){ /* ignore */ }
   }
 
   // Stacked bar for detection methods (per year or for selected state)
@@ -321,28 +366,43 @@
   // Age distribution bar
   function renderAge(filtered){
     const container = d3.select('#ageBar'); container.selectAll('*').remove();
-    const margin = {top:10,right:10,bottom:30,left:50};
-    const w = container.node().clientWidth; const h=160;
+    // increase left and bottom margins so Y-axis tick labels and axis labels are visible and not clipped
+    const margin = {top:10,right:10,bottom:60,left:90};
+    const w = container.node().clientWidth; const h=260;
     const svg = container.append('svg').attr('class','chart').attr('viewBox',`0 0 ${w} ${h}`);
     const g = svg.append('g').attr('transform',`translate(${margin.left},${margin.top})`);
     const innerW = w - margin.left - margin.right; const innerH = h - margin.top - margin.bottom;
 
-    const byAge = d3.rollup(filtered, v=> d3.sum(v,d=> d.fines_count||0), d=> d.age_group);
-    const ages = Array.from(byAge.keys()).sort();
+    // Aggregate across all years (ignore the activeYear) to show total fines per age group
+    const baseFiltered = data.filter(d=> (activeState==='all' || d.state===activeState) && (activeDetections.length===0 || activeDetections.includes(d.detection_method)) && (activeLoc==='All' || d.location===activeLoc));
+    const byAge = d3.rollup(baseFiltered, v=> d3.sum(v,d=> d.fines_count||0), d=> d.age_group);
+    // prefer a sensible age ordering if present in the data
+    const preferredOrder = ['0-16','17-25','26-39','40-64','65 and over','Unknown'];
+    let ages = preferredOrder.filter(a=> byAge.has(a));
+    if(ages.length===0) ages = Array.from(byAge.keys()).sort();
+    // remove any 'Unknown' bucket from the display
+    ages = ages.filter(a => !(a || '').toString().toLowerCase().includes('unknown'));
     if(ages.length===0){ g.append('text').text('No data').attr('x',10).attr('y',20); return; }
     const dataA = ages.map(a=> ({age:a, fines: byAge.get(a)}));
     const x = d3.scaleBand().domain(ages).range([0,innerW]).padding(0.1);
-    const y = d3.scaleLinear().domain([0, d3.max(dataA,d=>d.fines)]).nice().range([innerH,0]);
+    // use a mild power scale (exponent < 1) to slightly compress large values
+    // while keeping small-value bars visible — less aggressive than sqrt
+    const maxVal = d3.max(dataA,d=> d.fines) || 1;
+    const y = d3.scalePow().exponent(0.8).domain([0, maxVal]).range([innerH,0]);
 
-    g.selectAll('rect').data(dataA).enter().append('rect').attr('x',d=> x(d.age)).attr('y',d=> y(d.fines)).attr('height',d=> innerH-y(d.fines)).attr('width', x.bandwidth()).attr('fill','#6b7280')
+    // color scale for age groups
+    const ageColors = d3.scaleOrdinal().domain(ages).range(['#2563eb','#10b981','#f59e0b','#ef4444','#60a5fa']);
+
+    g.selectAll('rect').data(dataA).enter().append('rect').attr('x',d=> x(d.age)).attr('y',d=> y(d.fines)).attr('height',d=> innerH-y(d.fines)).attr('width', x.bandwidth()).attr('fill', d=> ageColors(d.age))
       .on('mouseover',(event,d)=>{ d3.selectAll('.tooltip').remove(); const tip = d3.select('body').append('div').attr('class','tooltip').html(`${d.age}<br/>Fines: ${d.fines.toLocaleString()}`); tip.style('left', (event.pageX+10) + 'px').style('top', (event.pageY+10) + 'px'); })
       .on('mouseout', ()=> d3.selectAll('.tooltip').remove());
 
     g.append('g').attr('transform',`translate(0,${innerH})`).attr('class','axis').call(d3.axisBottom(x));
     g.append('g').attr('class','axis').call(d3.axisLeft(y).ticks(4).tickFormat(d3.format(',')));
 
-    svg.append('text').attr('class','axis-label').attr('x', (w/2)).attr('y', h - 4).attr('text-anchor','middle').text('Age group');
-    svg.append('text').attr('class','axis-label').attr('transform', `translate(14,${h/2}) rotate(-90)`).attr('text-anchor','middle').text('Fines');
+    // push axis labels further out from the plot area
+    svg.append('text').attr('class','axis-label').attr('x', (w/2)).attr('y', h - 10).attr('text-anchor','middle').text('Age group');
+    svg.append('text').attr('class','axis-label').attr('transform', `translate(8,${h/2}) rotate(-90)`).attr('text-anchor','middle').text('Fines');
   }
 
   // Top regions (by state) bar chart
@@ -354,20 +414,27 @@
     const g = svg.append('g').attr('transform',`translate(${margin.left},${margin.top})`);
     const innerW = w - margin.left - margin.right; const innerH = h - margin.top - margin.bottom;
 
-    const byState = d3.rollups(filtered, v=> d3.sum(v,d=> d.fines_count||0), d=> d.state).map(([k,v])=> ({state:k, fines:v}));
+    const byState = d3.rollups(filtered, v=> d3.sum(v,d=> d.fines_count||0), d=> d.state)
+      .map(([k,v])=> ({state:k, fines:v})).filter(d=> d.state && d.state.toString().trim() !== '');
     if(byState.length===0){ g.append('text').text('No data').attr('x',10).attr('y',20); return; }
-    const sorted = byState.sort((a,b)=> b.fines - a.fines).slice(0,10);
-    const y = d3.scaleBand().domain(sorted.map(d=> d.state)).range([0, innerH]).padding(0.12);
-    const x = d3.scaleLinear().domain([0, d3.max(sorted,d=> d.fines)]).range([0, innerW]).nice();
+    // sort descending but include all jurisdictions
+    const sorted = byState.sort((a,b)=> b.fines - a.fines);
 
-    g.selectAll('rect').data(sorted).enter().append('rect').attr('y',d=> y(d.state)).attr('height', y.bandwidth()).attr('x',0).attr('width',d=> x(d.fines)).attr('fill','#0b3d91')
+    const x = d3.scaleBand().domain(sorted.map(d=> d.state)).range([0, innerW]).padding(0.12);
+    const y = d3.scaleLinear().domain([0, d3.max(sorted,d=> d.fines)]).nice().range([innerH,0]);
+
+    // colour per jurisdiction (categorical)
+    const color = d3.scaleOrdinal().domain(sorted.map(d=> d.state)).range(d3.schemeTableau10.concat(d3.schemeCategory10));
+
+    g.selectAll('rect').data(sorted).enter().append('rect')
+      .attr('x', d=> x(d.state)).attr('y', d=> y(d.fines)).attr('width', x.bandwidth()).attr('height', d=> innerH - y(d.fines)).attr('fill', d=> color(d.state))
       .on('mouseover',(event,d)=>{ d3.selectAll('.tooltip').remove(); const tip = d3.select('body').append('div').attr('class','tooltip').html(`<strong>${d.state}</strong><br/>Fines: ${d.fines.toLocaleString()}`); tip.style('left', (event.pageX+10) + 'px').style('top', (event.pageY+10) + 'px'); })
       .on('mouseout', ()=> d3.selectAll('.tooltip').remove());
 
-    g.append('g').attr('class','axis').call(d3.axisLeft(y));
-    g.append('g').attr('class','axis').attr('transform',`translate(0,${innerH})`).call(d3.axisBottom(x).ticks(5).tickFormat(d3.format(',')));
+    g.append('g').attr('transform',`translate(0,${innerH})`).attr('class','axis').call(d3.axisBottom(x)).selectAll('text').attr('transform','rotate(-30)').style('text-anchor','end');
+    g.append('g').attr('class','axis').call(d3.axisLeft(y).ticks(6).tickFormat(d3.format(',')));
 
-    svg.append('text').attr('class','axis-label').attr('x', (w/2)).attr('y', h - 6).attr('text-anchor','middle').text('Fines');
+    svg.append('text').attr('class','axis-label').attr('x', (w/2)).attr('y', h - 6).attr('text-anchor','middle').text('Jurisdiction');
   }
 
   // Jurisdiction totals bar (Q1 - comparison across states for selected year)
@@ -439,6 +506,105 @@
       gL.append('rect').attr('width',12).attr('height',12).attr('fill', color(k));
       gL.append('text').attr('x',18).attr('y',10).text(k.charAt(0).toUpperCase()+k.slice(1)).attr('font-size','12px').attr('fill','#111827');
     });
+  }
+
+  // Q3 (alternate): render a single pie for the selected jurisdiction showing fines by detection method
+  function renderDetectionPie(filtered){
+    const container = d3.select('#topRegions'); if(!container.node()) return;
+    container.selectAll('*').remove();
+    const w = container.node().clientWidth || 600; const h = 360;
+
+    // determine which jurisdiction to show (prefer activeState, fall back to select value)
+    const jurisSelect = document.getElementById('jurisdiction');
+    const selVal = jurisSelect && jurisSelect.value ? jurisSelect.value.toString() : (activeState || 'all');
+    const jur = (selVal || '').toString().toLowerCase();
+
+    // If 'all' selected — render small multiples (one pie per jurisdiction)
+    if(jur === 'all'){
+      // aggregate across all jurisdictions (use the filtered dataset passed in)
+      const byMethod = Array.from(d3.rollup(filtered, v=> d3.sum(v, d=> d.fines_count||0), d=> d.detection_method)).map(([m,val])=> ({method:m, fines: val})).filter(d=> d.fines > 0);
+      if(byMethod.length===0){ container.append('div').text('No data for All jurisdictions'); return; }
+
+      const w = container.node().clientWidth || 600; const h = 360;
+      const svg = container.append('svg').attr('class','chart').attr('viewBox',`0 0 ${w} ${h}`);
+      const g = svg.append('g').attr('transform', `translate(${w/2},${h/2})`);
+      // Force camera -> blue, police -> red
+      const colorMap = {'Camera':'#2563eb','Police':'#d1495b'};
+      const color = d3.scaleOrdinal().domain(byMethod.map(d=> d.method)).range(byMethod.map(d=> colorMap[d.method] || colorMap['Camera']));
+      const radius = Math.min(w,h)/2 - 20;
+      const pie = d3.pie().value(d=> d.fines)(byMethod);
+      const arc = d3.arc().innerRadius(0).outerRadius(radius);
+
+      g.selectAll('path').data(pie).enter().append('path')
+        .attr('d', arc)
+        .attr('fill', d=> color(d.data.method))
+        .attr('stroke', '#ffffff')
+        .attr('stroke-width', 1)
+        .on('mouseover', (event,d)=>{ d3.selectAll('.tooltip').remove(); const fmt = d3.format(','); const pct = ((d.data.fines / d3.sum(byMethod, m=> m.fines))*100).toFixed(2); const tip = d3.select('body').append('div').attr('class','tooltip').html(`<strong>${d.data.method}</strong><br/>Fines: ${fmt(d.data.fines)} (${pct}%)`); tip.style('left', (event.pageX+10) + 'px').style('top', (event.pageY+10) + 'px'); })
+        .on('mouseout', ()=> d3.selectAll('.tooltip').remove());
+
+      // (no center label for the aggregated pie)
+
+      // legend
+      try{
+        container.style('position','relative');
+        d3.select(container.node()).selectAll('.chart-legend-outside').remove();
+        const legendDiv = d3.select(container.node()).append('div').attr('class','chart-legend-outside');
+        byMethod.forEach(m => {
+          const item = legendDiv.append('div').attr('class','legend-item');
+          item.append('span').attr('class','legend-swatch').style('background', color(m.method));
+          item.append('span').attr('class','legend-label').text(`${m.method} (${m.fines.toLocaleString()})`);
+        });
+      }catch(e){ /* ignore legend errors */ }
+
+      return;
+    }
+
+    // Single jurisdiction pie (previous behavior)
+    const subset = data.filter(d=> (d.state||'').toString() === selVal);
+    // merge any 'Other' into Camera and ensure labels 'Camera'/'Police'
+    const byMethodRaw = Array.from(d3.rollup(subset, v=> d3.sum(v, d=> d.fines_count||0), d=> d.detection_method)).map(([k,v])=> ({method:k, fines:v}));
+    const byMethod = [];
+    byMethodRaw.forEach(m=>{
+      const key = (m.method||'').toString();
+      if(key.toLowerCase().includes('camera') || key.toLowerCase().includes('other')){
+        const existing = byMethod.find(x=> x.method === 'Camera');
+        if(existing) existing.fines += m.fines; else byMethod.push({method:'Camera', fines: m.fines});
+      } else if(key.toLowerCase().includes('police') || key.toLowerCase().includes('officer')){
+        const existing = byMethod.find(x=> x.method === 'Police');
+        if(existing) existing.fines += m.fines; else byMethod.push({method:'Police', fines: m.fines});
+      } else {
+        // treat unknown as Camera
+        const existing = byMethod.find(x=> x.method === 'Camera');
+        if(existing) existing.fines += m.fines; else byMethod.push({method:'Camera', fines: m.fines});
+      }
+    });
+    const svg = container.append('svg').attr('class','chart').attr('viewBox',`0 0 ${w} ${h}`);
+    const g = svg.append('g').attr('transform', `translate(${w/2},${h/2})`);
+    if(byMethod.length===0){ g.append('text').attr('text-anchor','middle').text('No data for ' + selVal); return; }
+    const colorMapSingle = {'Camera':'#2563eb','Police':'#d1495b'};
+    const color = d3.scaleOrdinal().domain(byMethod.map(d=> d.method)).range(byMethod.map(d=> colorMapSingle[d.method] || colorMapSingle['Camera']));
+    const radius = Math.min(w,h)/2 - 20;
+    const pie = d3.pie().value(d=> d.fines)(byMethod);
+    const arc = d3.arc().innerRadius(0).outerRadius(radius);
+    g.selectAll('path').data(pie).enter().append('path')
+      .attr('d', arc)
+      .attr('fill', d=> color(d.data.method))
+      .attr('stroke', '#ffffff')
+      .attr('stroke-width', 1)
+      .on('mouseover', (event,d)=>{ d3.selectAll('.tooltip').remove(); const fmt = d3.format(','); const tip = d3.select('body').append('div').attr('class','tooltip').html(`<strong>${d.data.method}</strong><br/>Fines: ${fmt(d.data.fines)}`); tip.style('left', (event.pageX+10) + 'px').style('top', (event.pageY+10) + 'px'); })
+      .on('mouseout', ()=> d3.selectAll('.tooltip').remove());
+    // (no center label for the single-jurisdiction pie)
+    try{
+      container.style('position','relative');
+      d3.select(container.node()).selectAll('.chart-legend-outside').remove();
+      const legendDiv = d3.select(container.node()).append('div').attr('class','chart-legend-outside');
+      byMethod.forEach(m => {
+        const item = legendDiv.append('div').attr('class','legend-item');
+        item.append('span').attr('class','legend-swatch').style('background', color(m.method));
+        item.append('span').attr('class','legend-label').text(`${m.method} (${m.fines.toLocaleString()})`);
+      });
+    }catch(e){ /* ignore legend errors */ }
   }
 
   // Q4: Location type comparison (urban vs rural or other location types)
@@ -546,18 +712,23 @@
       // Q1: trends + jurisdiction totals
       renderLine(filtered);
       renderJurisdictionBars(filtered);
+      setSidebarHeight();
     } else if(page === 'q2'){
       // Q2: age groups
       renderAge(filtered);
+      setSidebarHeight();
     } else if(page === 'q3'){
-      // Q3: detection grouped (camera vs police by jurisdiction)
-      renderDetectionGrouped(filtered);
+      // Q3: detection pie per selected jurisdiction (single pie shown)
+      renderDetectionPie(filtered);
+      setSidebarHeight();
     } else if(page === 'q4'){
-      // Q4: location types
-      renderLocationBar(filtered);
+      // Q4: top regions (sum fines per jurisdiction)
+      renderTopRegions(filtered);
+      setSidebarHeight();
     } else if(page === 'q5'){
       // Q5: camera vs police over time
       renderCameraPoliceLines(filtered);
+      setSidebarHeight();
     } else {
       // default: legacy dashboard - render everything available
       renderLine(filtered);
@@ -565,6 +736,7 @@
       renderAge(filtered);
       renderTopRegions(filtered);
       if(topo) renderMap(topo);
+      setSidebarHeight();
     }
   }
 
@@ -592,7 +764,40 @@
   // Wire up filter listeners
   const jurisEl = document.getElementById('jurisdiction'); if(jurisEl) jurisEl.addEventListener('change', e=>{ activeState = e.target.value; updateAll(); });
   const yearRangeEl = document.getElementById('yearRange'); if(yearRangeEl) yearRangeEl.addEventListener('input', e=>{ activeYear = +e.target.value; const yrSpan = document.getElementById('yr'); if(yrSpan) yrSpan.textContent = activeYear; updateAll(); });
-  const detectionEl = document.getElementById('detection'); if(detectionEl) detectionEl.addEventListener('change', e=>{ activeDetections = Array.from(e.target.selectedOptions).map(o=>o.value); updateAll(); });
+  const detectionEl = document.getElementById('detection'); if(detectionEl) detectionEl.addEventListener('change', e=>{
+    const sel = Array.from(e.target.selectedOptions).map(o=> o.value);
+    // if user picks the convenience 'Both' option, translate to both canonical methods
+    if(sel.includes('Both')){
+      activeDetections = ['Camera','Police'];
+    } else {
+      activeDetections = sel;
+    }
+
+    // For trends: dynamically constrain years based on selected detection
+    if(page==='q1'){
+      const ys = document.getElementById('yearStart');
+      const ye = document.getElementById('yearEnd');
+      if(ys && ye){
+        // Determine available years for selected detection(s)
+        const allowed = Array.from(new Set(data
+          .filter(d=> (activeDetections.length===0 || activeDetections.includes(d.detection_method)))
+          .map(d=> d.year))).filter(Boolean).sort((a,b)=>a-b);
+        if(allowed.length){
+          const minY = allowed[0], maxY = allowed[allowed.length-1];
+          ys.min = minY; ys.max = maxY; ye.min = minY; ye.max = maxY;
+          // Clamp current selections to allowed range
+          activeYearStart = Math.max(minY, Math.min(activeYearStart || minY, maxY));
+          activeYearEnd = Math.max(minY, Math.min(activeYearEnd || maxY, maxY));
+          if(activeYearStart>activeYearEnd) activeYearStart = minY;
+          ys.value = activeYearStart; ye.value = activeYearEnd;
+        }
+      }
+    }
+    updateAll();
+  });
+  // Trends: start/end year listeners
+  const yearStartEl = document.getElementById('yearStart'); if(yearStartEl) yearStartEl.addEventListener('change', e=>{ activeYearStart = +e.target.value; if(activeYearEnd && activeYearStart>activeYearEnd){ activeYearEnd = activeYearStart; const ye = document.getElementById('yearEnd'); if(ye) ye.value = activeYearEnd; } updateAll(); });
+  const yearEndEl = document.getElementById('yearEnd'); if(yearEndEl) yearEndEl.addEventListener('change', e=>{ activeYearEnd = +e.target.value; if(activeYearStart && activeYearEnd<activeYearStart){ activeYearStart = activeYearEnd; const ys = document.getElementById('yearStart'); if(ys) ys.value = activeYearStart; } updateAll(); });
   const locTypeEl = document.getElementById('locType'); if(locTypeEl) locTypeEl.addEventListener('change', e=>{ activeLoc = e.target.value; updateAll(); });
   window.addEventListener('filtersChanged', updateAll);
   // Re-render charts on resize (debounced)
@@ -606,8 +811,10 @@
 
   window.addEventListener('resize', debounce(()=>{
     updateAll();
+    setSidebarHeight();
   }, 200));
 
   // initial render
   updateAll();
+  setSidebarHeight();
 })();
