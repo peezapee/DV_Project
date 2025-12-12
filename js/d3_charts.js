@@ -258,7 +258,7 @@
   function renderLine(filtered){
     const container = d3.select('#lineChart'); container.selectAll('*').remove();
     // increase left and bottom margins so axis tick labels and axis label are readable
-    const margin = {top:12,right:16,bottom:40,left:72};
+    const margin = {top:12,right:20,bottom:56,left:100};
     const w = container.node().clientWidth; const h = 220;
     const svg = container.append('svg').attr('class','chart').attr('viewBox',`0 0 ${w} ${h}`);
     const g = svg.append('g').attr('transform',`translate(${margin.left},${margin.top})`);
@@ -292,7 +292,9 @@
     g.append('g').attr('transform',`translate(0,${innerH})`).attr('class','axis').call(xAxis);
     g.append('g').attr('class','axis').call(yAxis);
 
-    svg.append('text').attr('class','axis-label').attr('x', (w/2)).attr('y', h - 6).attr('text-anchor','middle').text('Year');
+    // axis labels
+    svg.append('text').attr('class','axis-label').attr('x', (w/2)).attr('y', h - 10).attr('text-anchor','middle').text('Year');
+    svg.append('text').attr('class','axis-label').attr('transform', `translate(18,${h/2}) rotate(-90)`).attr('text-anchor','middle').text('Fines (count)');
   }
 
   // Ensure sidebar height matches the chart panel height (used across pages)
@@ -408,7 +410,7 @@
   // Top regions (by state) bar chart
   function renderTopRegions(filtered){
     const container = d3.select('#topRegions'); container.selectAll('*').remove();
-    const margin = {top:10,right:10,bottom:40,left:70};
+    const margin = {top:10,right:10,bottom:56,left:80};
     const w = container.node() ? container.node().clientWidth : 600; const h = 360;
     const svg = container.append('svg').attr('class','chart').attr('viewBox',`0 0 ${w} ${h}`);
     const g = svg.append('g').attr('transform',`translate(${margin.left},${margin.top})`);
@@ -434,7 +436,9 @@
     g.append('g').attr('transform',`translate(0,${innerH})`).attr('class','axis').call(d3.axisBottom(x)).selectAll('text').attr('transform','rotate(-30)').style('text-anchor','end');
     g.append('g').attr('class','axis').call(d3.axisLeft(y).ticks(6).tickFormat(d3.format(',')));
 
-    svg.append('text').attr('class','axis-label').attr('x', (w/2)).attr('y', h - 6).attr('text-anchor','middle').text('Jurisdiction');
+    // axis labels
+    svg.append('text').attr('class','axis-label').attr('x', (w/2)).attr('y', h - 10).attr('text-anchor','middle').text('Jurisdiction');
+    svg.append('text').attr('class','axis-label').attr('transform', `translate(14,${h/2}) rotate(-90)`).attr('text-anchor','middle').text('Fines (count)');
   }
 
   // Jurisdiction totals bar (Q1 - comparison across states for selected year)
@@ -636,7 +640,7 @@
     const container = d3.select('#cameraPoliceChart'); if(!container.node()) return;
     container.selectAll('*').remove();
     // Slightly larger left margin so Y-axis labels aren't clipped; cap total height to make chart a bit smaller
-    const margin = {top:8,right:20,bottom:28,left:72};
+    const margin = {top:8,right:24,bottom:52,left:110};
     const w = container.node().clientWidth || 700;
     // Use container height but keep it within a reasonable range so the chart is slightly smaller
     const containerH = container.node().clientHeight || 520;
@@ -677,6 +681,10 @@
     // axes
     g.append('g').attr('transform',`translate(0,${innerH})`).attr('class','axis').call(d3.axisBottom(x).ticks(Math.min(years.length, 10)).tickFormat(d3.format('d')));
     g.append('g').attr('class','axis').call(d3.axisLeft(y).ticks(5).tickFormat(d3.format(',')));
+
+    // axis labels
+    svg.append('text').attr('class','axis-label').attr('x', (w/2)).attr('y', h - 12).attr('text-anchor','middle').text('Year');
+    svg.append('text').attr('class','axis-label').attr('transform', `translate(22,${h/2}) rotate(-90)`).attr('text-anchor','middle').text('Fines (count)');
 
     // Render legend outside the SVG as an HTML element to avoid overlapping the plotted lines
     try{
